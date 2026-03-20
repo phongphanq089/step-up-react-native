@@ -1,35 +1,74 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
+import { Tabs } from 'expo-router'
+import React from 'react'
+import { Pressable } from 'react-native'
+import { MaterialIcons } from '@expo/vector-icons'
 
-import { HapticTab } from '@/components/haptic-tab';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import { HapticTab } from '@/components/haptic-tab'
+import { IconSymbol } from '@/components/ui/icon-symbol'
+import { useTheme } from '@/context/theme-context'
+import { Colors } from '@/constants/theme'
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  const { theme, toggleTheme } = useTheme()
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
+        tabBarActiveTintColor: Colors[theme].tabIconSelected,
+        headerShown: true,
+        headerStyle: {
+          backgroundColor: Colors[theme].headerBackground,
+        },
+        headerShadowVisible: false,
+        headerTintColor: Colors[theme].headerText,
         tabBarButton: HapticTab,
-      }}>
+        headerRight: () => (
+          <Pressable onPress={toggleTheme} style={{ marginRight: 15 }}>
+            <MaterialIcons
+              name={theme === 'dark' ? 'light-mode' : 'dark-mode'}
+              size={24}
+              color={Colors[theme].headerText}
+            />
+          </Pressable>
+        ),
+        tabBarStyle: {
+          backgroundColor: Colors[theme].tabBackground,
+          borderTopLeftRadius: 20,
+          borderTopRightRadius: 20,
+        },
+      }}
+    >
       <Tabs.Screen
-        name="index"
+        name='index'
         options={{
           title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          tabBarIcon: ({ color }) => (
+            <IconSymbol size={28} name='house.fill' color={color} />
+          ),
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name='explore'
         options={{
           title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          tabBarIcon: ({ color }) => (
+            <IconSymbol size={28} name='paperplane.fill' color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name='about'
+        options={{
+          title: 'About',
+          tabBarIcon: ({ color }) => (
+            <IconSymbol
+              size={28}
+              name='person.crop.circle.fill'
+              color={color}
+            />
+          ),
         }}
       />
     </Tabs>
-  );
+  )
 }
