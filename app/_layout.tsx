@@ -11,6 +11,7 @@ import { useEffect } from 'react'
 import 'react-native-reanimated'
 
 import { ToastProvider } from '@/components/ui/toast'
+import { Sidebar } from '@/components/ui/sidebar'
 import { SidebarProvider } from '@/context/sidebar-context'
 import { ThemeProvider, useTheme } from '@/context/theme-context'
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
@@ -55,6 +56,7 @@ function AppContent() {
         />
       </Stack>
       <StatusBar style={theme === 'dark' ? 'light' : 'dark'} />
+      <Sidebar />
     </NavProvider>
   )
 }

@@ -1,15 +1,17 @@
-import { Tabs } from 'expo-router'
-import React from 'react'
-import { Pressable } from 'react-native'
-import { MaterialIcons } from '@expo/vector-icons'
-
 import { HapticTab } from '@/components/haptic-tab'
 import { IconSymbol } from '@/components/ui/icon-symbol'
-import { useTheme } from '@/context/theme-context'
 import { Colors } from '@/constants/theme'
+import { useTheme } from '@/context/theme-context'
+import { useSidebar } from '@/context/sidebar-context'
+import { MaterialIcons } from '@expo/vector-icons'
+import { Tabs, useRouter } from 'expo-router'
+import React from 'react'
+import { Pressable, View } from 'react-native'
 
 export default function TabLayout() {
   const { theme, toggleTheme } = useTheme()
+  const { open: openSidebar } = useSidebar()
+  const router = useRouter()
 
   return (
     <Tabs
@@ -22,6 +24,32 @@ export default function TabLayout() {
         headerShadowVisible: false,
         headerTintColor: Colors[theme].headerText,
         tabBarButton: HapticTab,
+        headerLeft: () => (
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <Pressable
+              onPress={openSidebar}
+              style={{ marginLeft: 15 }}
+              hitSlop={10}
+            >
+              <MaterialIcons
+                name='menu'
+                size={24}
+                color={Colors[theme].headerText}
+              />
+            </Pressable>
+            <Pressable
+              onPress={() => router.back()}
+              style={{ marginLeft: 15 }}
+              hitSlop={10}
+            >
+              <MaterialIcons
+                name='arrow-back'
+                size={24}
+                color={Colors[theme].headerText}
+              />
+            </Pressable>
+          </View>
+        ),
         headerRight: () => (
           <Pressable onPress={toggleTheme} style={{ marginRight: 15 }}>
             <MaterialIcons
@@ -74,11 +102,7 @@ export default function TabLayout() {
         options={{
           title: 'Form Demo',
           tabBarIcon: ({ color }) => (
-            <IconSymbol
-              size={28}
-              name='doc.text.fill'
-              color={color}
-            />
+            <IconSymbol size={28} name='doc.text.fill' color={color} />
           ),
         }}
       />

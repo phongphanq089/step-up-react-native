@@ -1,5 +1,6 @@
 import { Brand, Colors, Radius, Spacing, Typography } from '@/constants/theme'
 import { useTheme } from '@/context/theme-context'
+import { MaterialIcons } from '@expo/vector-icons'
 import React from 'react'
 import {
   ActivityIndicator,
@@ -78,7 +79,15 @@ export function Button({
         <ActivityIndicator color={textColor} size='small' />
       ) : (
         <View style={styles.inner}>
-          {leftIcon && <View style={styles.iconLeft}>{leftIcon}</View>}
+          {leftIcon && (
+            <View style={styles.iconLeft}>
+              {typeof leftIcon === 'string' ? (
+                <MaterialIcons name={leftIcon as any} size={20} color={textColor} />
+              ) : (
+                leftIcon
+              )}
+            </View>
+          )}
           <Text
             style={[
               styles.label,
@@ -88,7 +97,15 @@ export function Button({
           >
             {label}
           </Text>
-          {rightIcon && <View style={styles.iconRight}>{rightIcon}</View>}
+          {rightIcon && (
+            <View style={styles.iconRight}>
+              {typeof rightIcon === 'string' ? (
+                <MaterialIcons name={rightIcon as any} size={20} color={textColor} />
+              ) : (
+                rightIcon
+              )}
+            </View>
+          )}
         </View>
       )}
     </Pressable>

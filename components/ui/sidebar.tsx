@@ -1,6 +1,8 @@
 import { Colors, Shadows, Spacing, Typography } from '@/constants/theme'
+import { useSidebar } from '@/context/sidebar-context'
 import { useTheme } from '@/context/theme-context'
 import { MaterialIcons } from '@expo/vector-icons'
+import { usePathname, useRouter } from 'expo-router'
 import React, { useCallback, useEffect, useRef } from 'react'
 import {
   Animated,
@@ -12,41 +14,77 @@ import {
   View,
 } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { ThemedText } from '../themed-text'
 
 const SIDEBAR_WIDTH = 280
 const { width: SCREEN_WIDTH } = Dimensions.get('window')
 
-interface SidebarItem {
+export interface SidebarItem {
   key: string
   label: string
   icon?: keyof typeof MaterialIcons.glyphMap
   badge?: number | string
   onPress?: () => void
+  route?: string
 }
 
-interface SidebarSection {
+export interface SidebarSection {
   title?: string
   items: SidebarItem[]
 }
 
+export const DEFAULT_SIDEBAR_SECTIONS: SidebarSection[] = [
+  {
+    title: 'MAIN',
+    items: [
+      { key: 'home', label: 'Dashboard', icon: 'dashboard', route: '/(tabs)' },
+      {
+        key: 'explore',
+        label: 'UI Library',
+        icon: 'color-lens',
+        route: '/(tabs)/explore',
+      },
+      { key: 'reports', label: 'Reports', icon: 'bar-chart' },
+    ],
+  },
+  {
+    title: 'SETTINGS',
+    items: [
+      { key: 'profile', label: 'Profile', icon: 'person' },
+      { key: 'settings', label: 'Settings', icon: 'settings' },
+    ],
+  },
+]
+
 interface SidebarProps {
-  visible: boolean
-  onClose: () => void
-  sections: SidebarSection[]
+  visible?: boolean
+  onClose?: () => void
+  sections?: SidebarSection[]
   activeKey?: string
   header?: React.ReactNode
   footer?: React.ReactNode
 }
 
 export function Sidebar({
-  visible,
-  onClose,
-  sections,
-  activeKey,
+  visible: propsVisible,
+  onClose: propsOnClose,
+  sections = DEFAULT_SIDEBAR_SECTIONS,
+  activeKey: propsActiveKey,
   header,
   footer,
 }: SidebarProps) {
   const { theme } = useTheme()
+  const { isOpen, close } = useSidebar()
+  const router = useRouter()
+  const pathname = usePathname()
+
+  const visible = propsVisible !== undefined ? propsVisible : isOpen
+  const onClose = propsOnClose || close
+
+  // Determine active key from pathname if not provided
+  const activeKey =
+    propsActiveKey || (pathname === '/' ? 'home' : pathname.split('/').pop())
+
   const c = Colors[theme]
   const insets = useSafeAreaInsets()
   const translateX = useRef(new Animated.Value(-SIDEBAR_WIDTH)).current
@@ -93,6 +131,17 @@ export function Sidebar({
 
   if (!visible) return null
 
+  const defaultHeader = (
+    <View style={{ marginBottom: Spacing.sm }}>
+      <ThemedText type='defaultSemiBold' style={{ fontSize: 20 }}>
+        ⚡ Step Up
+      </ThemedText>
+      <ThemedText style={{ fontSize: 12, color: c.textSecondary }}>
+        v1.0.0 · Component Library
+      </ThemedText>
+    </View>
+  )
+
   return (
     <View style={StyleSheet.absoluteFill} pointerEvents='box-none'>
       {/* Backdrop */}
@@ -119,7 +168,7 @@ export function Sidebar({
         ]}
       >
         {/* Header */}
-        {header && <View style={styles.sidebarHeader}>{header}</View>}
+        <View style={styles.sidebarHeader}>{header || defaultHeader}</View>
 
         {/* Close button */}
         <Pressable
@@ -152,6 +201,9 @@ export function Sidebar({
                   <Pressable
                     key={item.key}
                     onPress={() => {
+                      if (item.route) {
+                        router.push(item.route as any)
+                      }
                       item.onPress?.()
                       closeSidebar()
                     }}

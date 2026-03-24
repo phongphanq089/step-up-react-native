@@ -22,7 +22,6 @@ import {
   RadioGroup,
   ScrollableSheet,
   Select,
-  Sidebar,
   SimpleSheet,
   SpeedDial,
   Switch,
@@ -35,6 +34,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Brand, Colors, Fonts, Spacing, Typography } from '@/constants/theme'
 import { useTheme } from '@/context/theme-context'
+import { useSidebar } from '@/context/sidebar-context'
 import { MaterialIcons } from '@expo/vector-icons'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
@@ -61,7 +61,15 @@ const CAROUSEL_DATA: CarouselItem[] = [
 ]
 
 // ─── Small helper for color showcase ──────────────────────────────────────────
-function ColorBox({ color, label, textColor }: { color: string; label: string; textColor: string }) {
+function ColorBox({
+  color,
+  label,
+  textColor,
+}: {
+  color: string
+  label: string
+  textColor: string
+}) {
   return (
     <View style={{ alignItems: 'center', width: 76, marginBottom: Spacing.md }}>
       <View
@@ -80,7 +88,14 @@ function ColorBox({ color, label, textColor }: { color: string; label: string; t
           elevation: 2,
         }}
       />
-      <Text style={{ fontSize: 11, color: textColor, fontWeight: '600', textAlign: 'center' }}>
+      <Text
+        style={{
+          fontSize: 11,
+          color: textColor,
+          fontWeight: '600',
+          textAlign: 'center',
+        }}
+      >
         {label}
       </Text>
     </View>
@@ -122,6 +137,7 @@ function UISection({
 // ─── Inner component that uses useToast ───────────────────────────────────────
 function ExploreContent() {
   const { theme } = useTheme()
+  const { open: openSidebar } = useSidebar()
   const c = Colors[theme]
   const { show: showToast } = useToast()
   const insets = useSafeAreaInsets()
@@ -142,7 +158,6 @@ function ExploreContent() {
   const [alertVisible, setAlertVisible] = useState(false)
   const [modalCenter, setModalCenter] = useState(false)
   const [modalBottom, setModalBottom] = useState(false)
-  const [sidebarVisible, setSidebarVisible] = useState(false)
 
   // Bottom sheet refs
   const simpleSheetRef = useRef<AppBottomSheetRef>(null)
@@ -201,15 +216,51 @@ function ExploreContent() {
         {/* ══════════════════════════════════════════════════════════════════ */}
         <UISection title='Theme Colors' theme={theme} c={c}>
           <View style={styles.rowAuto}>
-            <ColorBox color={Brand.primary} label='Primary' textColor={c.textSecondary} />
-            <ColorBox color={Brand.secondary} label='Secondary' textColor={c.textSecondary} />
-            <ColorBox color={c.background} label='Background' textColor={c.textSecondary} />
-            <ColorBox color={c.surface} label='Surface' textColor={c.textSecondary} />
-            <ColorBox color={c.text} label='Text Main' textColor={c.textSecondary} />
-            <ColorBox color={c.border} label='Border' textColor={c.textSecondary} />
-            <ColorBox color={c.success} label='Success' textColor={c.textSecondary} />
-            <ColorBox color={c.warning} label='Warning' textColor={c.textSecondary} />
-            <ColorBox color={c.error} label='Error' textColor={c.textSecondary} />
+            <ColorBox
+              color={Brand.primary}
+              label='Primary'
+              textColor={c.textSecondary}
+            />
+            <ColorBox
+              color={Brand.secondary}
+              label='Secondary'
+              textColor={c.textSecondary}
+            />
+            <ColorBox
+              color={c.background}
+              label='Background'
+              textColor={c.textSecondary}
+            />
+            <ColorBox
+              color={c.surface}
+              label='Surface'
+              textColor={c.textSecondary}
+            />
+            <ColorBox
+              color={c.text}
+              label='Text Main'
+              textColor={c.textSecondary}
+            />
+            <ColorBox
+              color={c.border}
+              label='Border'
+              textColor={c.textSecondary}
+            />
+            <ColorBox
+              color={c.success}
+              label='Success'
+              textColor={c.textSecondary}
+            />
+            <ColorBox
+              color={c.warning}
+              label='Warning'
+              textColor={c.textSecondary}
+            />
+            <ColorBox
+              color={c.error}
+              label='Error'
+              textColor={c.textSecondary}
+            />
             <ColorBox color={c.info} label='Info' textColor={c.textSecondary} />
           </View>
         </UISection>
@@ -218,27 +269,39 @@ function ExploreContent() {
         {/* TYPOGRAPHY */}
         {/* ══════════════════════════════════════════════════════════════════ */}
         <UISection title='Typography' theme={theme} c={c}>
-          {(['4xl', '3xl', '2xl', 'xl', 'lg', 'md', 'sm', 'xs'] as const).map((size) => (
-            <View
-              key={size}
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                paddingVertical: Spacing.sm,
-                borderBottomWidth: size !== 'xs' ? StyleSheet.hairlineWidth : 0,
-                borderBottomColor: c.border,
-              }}
-            >
-              <View style={{ width: 48 }}>
-                <Text style={{ fontSize: 13, color: c.textSecondary, fontWeight: 'bold' }}>
-                  {size}
-                </Text>
+          {(['4xl', '3xl', '2xl', 'xl', 'lg', 'md', 'sm', 'xs'] as const).map(
+            (size) => (
+              <View
+                key={size}
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  paddingVertical: Spacing.sm,
+                  borderBottomWidth:
+                    size !== 'xs' ? StyleSheet.hairlineWidth : 0,
+                  borderBottomColor: c.border,
+                }}
+              >
+                <View style={{ width: 48 }}>
+                  <Text
+                    style={{
+                      fontSize: 13,
+                      color: c.textSecondary,
+                      fontWeight: 'bold',
+                    }}
+                  >
+                    {size}
+                  </Text>
+                </View>
+                <ThemedText
+                  style={{ fontSize: Typography.size[size], flex: 1 }}
+                  numberOfLines={1}
+                >
+                  The quick brown fox
+                </ThemedText>
               </View>
-              <ThemedText style={{ fontSize: Typography.size[size], flex: 1 }} numberOfLines={1}>
-                The quick brown fox
-              </ThemedText>
-            </View>
-          ))}
+            ),
+          )}
         </UISection>
 
         {/* ══════════════════════════════════════════════════════════════════ */}
@@ -432,7 +495,7 @@ function ExploreContent() {
             <Button
               label='Toggle Sidebar'
               variant='outline'
-              onPress={() => setSidebarVisible(true)}
+              onPress={openSidebar}
             />
             <Button
               label='Simple Sheet'
@@ -552,39 +615,7 @@ function ExploreContent() {
         </View>
       </AppModal>
 
-      {/* Sidebar */}
-      <Sidebar
-        visible={sidebarVisible}
-        onClose={() => setSidebarVisible(false)}
-        activeKey='dashboard'
-        header={
-          <ThemedText type='defaultSemiBold' style={{ fontSize: 18 }}>
-            ⚡ Step Up
-          </ThemedText>
-        }
-        sections={[
-          {
-            title: 'MAIN',
-            items: [
-              {
-                key: 'dashboard',
-                label: 'Dashboard',
-                icon: 'dashboard',
-                badge: 3,
-              },
-              { key: 'tasks', label: 'Tasks', icon: 'task-alt' },
-              { key: 'reports', label: 'Reports', icon: 'bar-chart' },
-            ],
-          },
-          {
-            title: 'SETTINGS',
-            items: [
-              { key: 'profile', label: 'Profile', icon: 'person' },
-              { key: 'settings', label: 'Settings', icon: 'settings' },
-            ],
-          },
-        ]}
-      />
+      {/* Global Sidebar handled in root layout */}
 
       {/* Bottom Sheets */}
       <SimpleSheet
