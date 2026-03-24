@@ -1,9 +1,7 @@
 import React, { useRef, useState } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { ScrollView, StyleSheet, Text, View } from 'react-native'
 
-import ParallaxScrollView from '@/components/parallax-scroll-view'
 import { ThemedText } from '@/components/themed-text'
-import { ThemedView } from '@/components/themed-view'
 import {
   ActionSheet,
   // Overlays
@@ -16,11 +14,8 @@ import {
   Carousel,
   Checkbox,
   Chip,
-  Collapsible,
   Divider,
   FormSheet,
-  // Layout / Navigation
-  IconSymbol,
   // Form
   Input,
   ProgressBar,
@@ -41,6 +36,7 @@ import { Button } from '@/components/ui/button'
 import { Brand, Colors, Fonts, Spacing, Typography } from '@/constants/theme'
 import { useTheme } from '@/context/theme-context'
 import { MaterialIcons } from '@expo/vector-icons'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 // ─── Carousel data ────────────────────────────────────────────────────────────
 const CAROUSEL_DATA: CarouselItem[] = [
@@ -64,11 +60,71 @@ const CAROUSEL_DATA: CarouselItem[] = [
   },
 ]
 
+// ─── Small helper for color showcase ──────────────────────────────────────────
+function ColorBox({ color, label, textColor }: { color: string; label: string; textColor: string }) {
+  return (
+    <View style={{ alignItems: 'center', width: 76, marginBottom: Spacing.md }}>
+      <View
+        style={{
+          width: 50,
+          height: 50,
+          borderRadius: 25,
+          backgroundColor: color,
+          borderWidth: StyleSheet.hairlineWidth,
+          borderColor: 'rgba(150,150,150,0.3)',
+          marginBottom: 8,
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.1,
+          shadowRadius: 4,
+          elevation: 2,
+        }}
+      />
+      <Text style={{ fontSize: 11, color: textColor, fontWeight: '600', textAlign: 'center' }}>
+        {label}
+      </Text>
+    </View>
+  )
+}
+
+// ─── Section Wrapper ──────────────────────────────────────────────────────────
+function UISection({
+  title,
+  children,
+  theme,
+  c,
+}: {
+  title: string
+  children: React.ReactNode
+  theme: 'light' | 'dark'
+  c: any
+}) {
+  // Use a distinct background to make it look like a showcase section
+  const sectionBg = theme === 'dark' ? '#1E293B' : '#F8FAFC' // Slight slate blue tint
+  const sectionBorder = theme === 'dark' ? '#334155' : '#E2E8F0'
+  const titleColor = theme === 'dark' ? '#F8FAFC' : '#0F172A'
+
+  return (
+    <View
+      style={[
+        styles.section,
+        { backgroundColor: sectionBg, borderColor: sectionBorder },
+      ]}
+    >
+      <ThemedText style={[styles.sectionTitle, { color: titleColor }]}>
+        {title}
+      </ThemedText>
+      <View style={styles.sectionContent}>{children}</View>
+    </View>
+  )
+}
+
 // ─── Inner component that uses useToast ───────────────────────────────────────
 function ExploreContent() {
   const { theme } = useTheme()
   const c = Colors[theme]
   const { show: showToast } = useToast()
+  const insets = useSafeAreaInsets()
 
   // Form states
   const [selectVal, setSelectVal] = useState<string | number>('')
@@ -95,120 +151,194 @@ function ExploreContent() {
   const formSheetRef = useRef<AppBottomSheetRef>(null)
 
   const tabItems = [
-    { key: 'home', label: 'Tổng quan' },
-    { key: 'tasks', label: 'Nhiệm vụ' },
-    { key: 'report', label: 'Báo cáo' },
+    { key: 'home', label: 'Overview' },
+    { key: 'tasks', label: 'Tasks' },
+    { key: 'report', label: 'Reports' },
   ]
   const periodTabs = [
-    { key: 'day', label: 'Ngày' },
-    { key: 'week', label: 'Tuần' },
-    { key: 'month', label: 'Tháng' },
+    { key: 'day', label: 'Day' },
+    { key: 'week', label: 'Week' },
+    { key: 'month', label: 'Month' },
   ]
   const viewTabs = [
-    { key: 'list', label: 'Danh sách' },
-    { key: 'grid', label: 'Lưới' },
+    { key: 'list', label: 'List View' },
+    { key: 'grid', label: 'Grid View' },
   ]
 
   return (
-    <View style={{ flex: 1 }}>
-      <ParallaxScrollView
-        headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
-        headerImage={
-          <IconSymbol
-            size={310}
-            color='#808080'
-            name='chevron.left.forwardslash.chevron.right'
-            style={styles.headerImage}
-          />
-        }
+    <View style={{ flex: 1, backgroundColor: c.background }}>
+      <ScrollView
+        contentContainerStyle={{
+          paddingTop: insets.top + Spacing.xl,
+          paddingBottom: insets.bottom + Spacing.xl * 3,
+          paddingHorizontal: Spacing.md,
+        }}
+        showsVerticalScrollIndicator={false}
       >
         {/* ── HEADER ───────────────────────────────────────────────────────── */}
-        <ThemedView style={styles.titleContainer}>
-          <ThemedText type='title' style={{ fontFamily: Fonts.Playfair.bold }}>
-            UI Kit
+        <View style={styles.header}>
+          <ThemedText
+            type='title'
+            style={{ fontFamily: Fonts.Playfair.bold, fontSize: 32 }}
+          >
+            Step Up UI
           </ThemedText>
-          <Badge label='23 Components' variant='primary' />
-        </ThemedView>
-        <ThemedText style={{ marginBottom: Spacing.lg }}>
-          Toàn bộ UI components trong hệ thống — tương tác để xem chúng hoạt
-          động.
+          <Badge label='Component Library' variant='primary' />
+        </View>
+        <ThemedText
+          style={{
+            marginBottom: Spacing.xl,
+            color: c.textSecondary,
+            fontSize: 16,
+          }}
+        >
+          Explore the atomic elements and complete components that makeup the
+          Step Up application experience.
         </ThemedText>
 
         {/* ══════════════════════════════════════════════════════════════════ */}
-        {/* 1. CAROUSEL */}
+        {/* THEME COLORS */}
         {/* ══════════════════════════════════════════════════════════════════ */}
-        <Collapsible title='🎠 Carousel'>
-          <Carousel data={CAROUSEL_DATA} height={180} />
-        </Collapsible>
+        <UISection title='Theme Colors' theme={theme} c={c}>
+          <View style={styles.rowAuto}>
+            <ColorBox color={Brand.primary} label='Primary' textColor={c.textSecondary} />
+            <ColorBox color={Brand.secondary} label='Secondary' textColor={c.textSecondary} />
+            <ColorBox color={c.background} label='Background' textColor={c.textSecondary} />
+            <ColorBox color={c.surface} label='Surface' textColor={c.textSecondary} />
+            <ColorBox color={c.text} label='Text Main' textColor={c.textSecondary} />
+            <ColorBox color={c.border} label='Border' textColor={c.textSecondary} />
+            <ColorBox color={c.success} label='Success' textColor={c.textSecondary} />
+            <ColorBox color={c.warning} label='Warning' textColor={c.textSecondary} />
+            <ColorBox color={c.error} label='Error' textColor={c.textSecondary} />
+            <ColorBox color={c.info} label='Info' textColor={c.textSecondary} />
+          </View>
+        </UISection>
 
         {/* ══════════════════════════════════════════════════════════════════ */}
-        {/* 2. TABS */}
+        {/* TYPOGRAPHY */}
         {/* ══════════════════════════════════════════════════════════════════ */}
-        <Collapsible title='🗂 Tabs'>
-          <ThemedText style={styles.sectionLabel}>Underline</ThemedText>
-          <Tabs
-            tabs={tabItems}
-            activeKey={activeTabUnderline}
-            onChange={setActiveTabUnderline}
-            variant='underline'
-          />
-          <Divider />
+        <UISection title='Typography' theme={theme} c={c}>
+          {(['4xl', '3xl', '2xl', 'xl', 'lg', 'md', 'sm', 'xs'] as const).map((size) => (
+            <View
+              key={size}
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                paddingVertical: Spacing.sm,
+                borderBottomWidth: size !== 'xs' ? StyleSheet.hairlineWidth : 0,
+                borderBottomColor: c.border,
+              }}
+            >
+              <View style={{ width: 48 }}>
+                <Text style={{ fontSize: 13, color: c.textSecondary, fontWeight: 'bold' }}>
+                  {size}
+                </Text>
+              </View>
+              <ThemedText style={{ fontSize: Typography.size[size], flex: 1 }} numberOfLines={1}>
+                The quick brown fox
+              </ThemedText>
+            </View>
+          ))}
+        </UISection>
 
-          <ThemedText style={styles.sectionLabel}>Pill</ThemedText>
-          <Tabs
-            tabs={periodTabs}
-            activeKey={activeTabPill}
-            onChange={setActiveTabPill}
-            variant='pill'
-          />
-          <Divider />
+        {/* ══════════════════════════════════════════════════════════════════ */}
+        {/* BUTTONS */}
+        {/* ══════════════════════════════════════════════════════════════════ */}
+        <UISection title='Buttons' theme={theme} c={c}>
+          <View style={styles.row}>
+            <Button label='Primary' variant='primary' style={{ flex: 1 }} />
+            <Button label='Secondary' variant='secondary' style={{ flex: 1 }} />
+          </View>
+          <View style={styles.row}>
+            <Button label='Outline' variant='outline' style={{ flex: 1 }} />
+            <Button label='Ghost' variant='ghost' style={{ flex: 1 }} />
+          </View>
+          <View style={styles.row}>
+            <Button label='Error Action' variant='ghost' style={{ flex: 1 }} />
+            <Button label='Disabled' disabled style={{ flex: 1 }} />
+          </View>
+          <View style={styles.row}>
+            <Button
+              label='With Icon'
+              leftIcon='star'
+              variant='primary'
+              style={{ flex: 1 }}
+            />
+            <Button
+              label='Small'
+              size='sm'
+              variant='secondary'
+              style={{ flex: 1 }}
+            />
+            <Button
+              label='Lg'
+              size='lg'
+              variant='outline'
+              style={{ flex: 1 }}
+            />
+          </View>
+        </UISection>
 
-          <ThemedText style={styles.sectionLabel}>Box</ThemedText>
+        {/* ══════════════════════════════════════════════════════════════════ */}
+        {/* TABS & SEGMENTED CONTROLS */}
+        {/* ══════════════════════════════════════════════════════════════════ */}
+        <UISection title='Tabs & Segments' theme={theme} c={c}>
+          <ThemedText style={styles.subLabel}>
+            Box Variant (Segmented)
+          </ThemedText>
           <Tabs
             tabs={viewTabs}
             activeKey={activeTabBox}
             onChange={setActiveTabBox}
             variant='box'
           />
-        </Collapsible>
+          <Divider style={{ marginVertical: Spacing.md }} />
+
+          <ThemedText style={styles.subLabel}>Pill Variant</ThemedText>
+          <Tabs
+            tabs={periodTabs}
+            activeKey={activeTabPill}
+            onChange={setActiveTabPill}
+            variant='pill'
+          />
+          <Divider style={{ marginVertical: Spacing.md }} />
+
+          <ThemedText style={styles.subLabel}>Underline Variant</ThemedText>
+          <Tabs
+            tabs={tabItems}
+            activeKey={activeTabUnderline}
+            onChange={setActiveTabUnderline}
+            variant='underline'
+          />
+        </UISection>
 
         {/* ══════════════════════════════════════════════════════════════════ */}
-        {/* 3. BUTTONS, BADGES & CHIPS */}
+        {/* BADGES & CHIPS */}
         {/* ══════════════════════════════════════════════════════════════════ */}
-        <Collapsible title='🔘 Buttons, Badges & Chips'>
-          <View style={styles.row}>
-            <Button
-              label='Primary'
-              variant='primary'
-              size='sm'
-              style={{ flex: 1 }}
-            />
-            <Button
-              label='Secondary'
-              variant='secondary'
-              size='sm'
-              style={{ flex: 1 }}
-            />
-          </View>
-          <View style={styles.row}>
+        <UISection title='Badges & Chips' theme={theme} c={c}>
+          <View style={styles.rowAuto}>
             <Badge label='Success' variant='success' />
             <Badge label='Warning' variant='warning' />
             <Badge label='Error' variant='error' />
             <Badge label='Info' variant='info' />
             <Badge label='Primary' variant='primary' />
           </View>
-          <View style={styles.row}>
-            <Chip label='React Native' icon='code' selected />
-            <Chip label='Expo' icon='flash-on' />
-            <Chip label='Design' icon='brush' />
+          <View style={[styles.rowAuto, { marginTop: Spacing.sm }]}>
+            <Chip label='Selected' icon='check' selected />
+            <Chip label='Unselected' icon='radio-button-unchecked' />
+            <Chip label='Disabled' icon='block' disabled />
           </View>
-        </Collapsible>
+        </UISection>
 
         {/* ══════════════════════════════════════════════════════════════════ */}
-        {/* 4. FORM CONTROLS */}
+        {/* FORM CONTROLS */}
         {/* ══════════════════════════════════════════════════════════════════ */}
-        <Collapsible title='📝 Form Controls'>
-          <Input label='Text Input' placeholder='Gõ gì đó...' leftIcon='edit' />
+        <UISection title='Form Controls' theme={theme} c={c}>
+          <Input
+            label='Text Input'
+            placeholder='Enter details...'
+            leftIcon='edit'
+          />
           <Input
             label='Password'
             placeholder='••••••••'
@@ -216,243 +346,174 @@ function ExploreContent() {
             leftIcon='lock'
           />
           <Select
-            label='Select'
+            label='Dropdown Select'
             options={[
-              { label: 'Tùy chọn 1', value: 1, icon: 'star' },
-              { label: 'Tùy chọn 2', value: 2, icon: 'favorite' },
-              { label: 'Tùy chọn 3', value: 3, icon: 'bolt' },
+              { label: 'Option 1', value: 1, icon: 'star' },
+              { label: 'Option 2', value: 2, icon: 'favorite' },
+              { label: 'Option 3', value: 3, icon: 'bolt' },
             ]}
             value={selectVal}
             onChange={setSelectVal}
-            required
           />
-          <View style={styles.row}>
-            <Switch
-              label='Bật thông báo'
-              value={switchVal}
-              onChange={setSwitchVal}
-            />
-          </View>
-          <Checkbox
-            label='Đồng ý điều khoản sử dụng'
-            checked={checkVal}
-            onChange={setCheckVal}
-          />
+
           <RadioGroup
-            label='Chọn một mục'
+            label='Radio Group'
             value={radioVal}
             onChange={setRadioVal}
             options={[
-              { label: 'Lựa chọn A', value: 'a' },
-              { label: 'Lựa chọn B', value: 'b' },
-              { label: 'Lựa chọn C', value: 'c' },
+              { label: 'Choice A', value: 'a' },
+              { label: 'Choice B', value: 'b' },
             ]}
           />
-        </Collapsible>
+          <View style={[styles.row, { marginTop: Spacing.sm }]}>
+            <View style={{ flex: 1 }}>
+              <Checkbox
+                label='Accept terms'
+                checked={checkVal}
+                onChange={setCheckVal}
+              />
+            </View>
+            <View style={{ flex: 1, alignItems: 'flex-start' }}>
+              <Switch
+                label='Enable feature'
+                value={switchVal}
+                onChange={setSwitchVal}
+              />
+            </View>
+          </View>
+        </UISection>
 
         {/* ══════════════════════════════════════════════════════════════════ */}
-        {/* 5. DATA DISPLAY */}
+        {/* DATA DISPLAY */}
         {/* ══════════════════════════════════════════════════════════════════ */}
-        <Collapsible title='📊 Data Display'>
+        <UISection title='Data Display' theme={theme} c={c}>
           <ThemedText type='defaultSemiBold' style={{ marginBottom: 8 }}>
             Progress Bar (65%)
           </ThemedText>
           <ProgressBar value={progress} />
-          <Divider />
+          <Divider style={{ marginVertical: Spacing.md }} />
 
-          <Card style={{ padding: 16 }}>
-            <ThemedText type='defaultSemiBold'>Card Component</ThemedText>
-            <ThemedText style={{ fontSize: 13, marginTop: 4, lineHeight: 20 }}>
-              Dùng để bao bọc các nội dung quan trọng với đổ bóng và bo góc
-              chuẩn. Hỗ trợ light & dark mode tự động.
+          <Card style={{ padding: Spacing.md }}>
+            <ThemedText type='defaultSemiBold'>Content Card</ThemedText>
+            <ThemedText
+              style={{
+                fontSize: 14,
+                marginTop: 4,
+                lineHeight: 22,
+                color: c.textSecondary,
+              }}
+            >
+              Cards are used to group related logical content together. They
+              feature elevated surfaces and maintain consistent padding bounds.
             </ThemedText>
           </Card>
-          <Divider />
-
-          <ThemedText type='defaultSemiBold' style={{ marginBottom: 10 }}>
-            Static Menu
-          </ThemedText>
-        </Collapsible>
+        </UISection>
 
         {/* ══════════════════════════════════════════════════════════════════ */}
-        {/* 7. TOAST */}
+        {/* OVERLAYS & MODALS */}
         {/* ══════════════════════════════════════════════════════════════════ */}
-        <Collapsible title='🔔 Toast Notifications'>
-          <ThemedText style={{ marginBottom: 12 }}>
-            Nhấn các nút bên dưới để hiển thị toast notification. Toast tự động
-            biến mất sau 3 giây.
-          </ThemedText>
-          <View style={styles.row}>
+        <UISection title='Overlays & Bottom Sheets' theme={theme} c={c}>
+          <View style={styles.grid}>
             <Button
-              label='Success'
-              variant='primary'
-              size='sm'
-              style={{ flex: 1 }}
-              onPress={() => showToast('Thao tác thành công!', 'success')}
-            />
-            <Button
-              label='Error'
-              variant='secondary'
-              size='sm'
-              style={{ flex: 1 }}
-              onPress={() => showToast('Đã xảy ra lỗi. Thử lại!', 'error')}
-            />
-          </View>
-          <View style={styles.row}>
-            <Button
-              label='Warning'
-              variant='secondary'
-              size='sm'
-              style={{ flex: 1 }}
-              onPress={() =>
-                showToast('Lưu ý: Phiên làm việc sắp hết hạn!', 'warning')
-              }
-            />
-            <Button
-              label='Info'
-              variant='secondary'
-              size='sm'
-              style={{ flex: 1 }}
-              onPress={() => showToast('Bản cập nhật mới đã sẵn sàng.', 'info')}
-            />
-          </View>
-        </Collapsible>
-
-        {/* ══════════════════════════════════════════════════════════════════ */}
-        {/* 8. MODALS */}
-        {/* ══════════════════════════════════════════════════════════════════ */}
-        <Collapsible title='🪟 Modals'>
-          <View style={styles.row}>
-            <Button
-              label='Alert Dialog'
-              variant='primary'
-              size='sm'
-              style={{ flex: 1 }}
+              label='Show Alert'
+              variant='outline'
               onPress={() => setAlertVisible(true)}
             />
             <Button
               label='Center Modal'
-              variant='secondary'
-              size='sm'
-              style={{ flex: 1 }}
+              variant='outline'
               onPress={() => setModalCenter(true)}
             />
-          </View>
-          <View style={[styles.row, { marginTop: 0 }]}>
             <Button
               label='Bottom Modal'
-              variant='secondary'
-              size='sm'
-              style={{ flex: 1 }}
+              variant='outline'
               onPress={() => setModalBottom(true)}
             />
             <Button
-              label='Sidebar'
-              variant='secondary'
-              size='sm'
-              style={{ flex: 1 }}
+              label='Toggle Sidebar'
+              variant='outline'
               onPress={() => setSidebarVisible(true)}
             />
-          </View>
-        </Collapsible>
-
-        {/* ══════════════════════════════════════════════════════════════════ */}
-        {/* 9. BOTTOM SHEETS */}
-        {/* ══════════════════════════════════════════════════════════════════ */}
-        <Collapsible title='📋 Bottom Sheets'>
-          <View style={styles.row}>
             <Button
-              label='Simple'
-              variant='primary'
-              size='sm'
-              style={{ flex: 1 }}
+              label='Simple Sheet'
+              variant='secondary'
               onPress={() => simpleSheetRef.current?.open()}
             />
             <Button
-              label='Scrollable'
+              label='Scrollable Sheet'
               variant='secondary'
-              size='sm'
-              style={{ flex: 1 }}
               onPress={() => scrollableSheetRef.current?.open()}
             />
-          </View>
-          <View style={[styles.row, { marginTop: 0 }]}>
             <Button
               label='Action Sheet'
               variant='secondary'
-              size='sm'
-              style={{ flex: 1 }}
               onPress={() => actionSheetRef.current?.open()}
             />
             <Button
               label='Form Sheet'
               variant='secondary'
-              size='sm'
-              style={{ flex: 1 }}
               onPress={() => formSheetRef.current?.open()}
             />
           </View>
-        </Collapsible>
+        </UISection>
 
         {/* ══════════════════════════════════════════════════════════════════ */}
-        {/* 10. TYPOGRAPHY & ICONS */}
+        {/* TOAST SYSTEM */}
         {/* ══════════════════════════════════════════════════════════════════ */}
-        <Collapsible title='✍️ Typography & Icons'>
-          <ThemedText type='title' style={{ marginBottom: 4 }}>
-            Title
-          </ThemedText>
-          <ThemedText type='subtitle' style={{ marginBottom: 4 }}>
-            Subtitle
-          </ThemedText>
-          <ThemedText type='defaultSemiBold' style={{ marginBottom: 4 }}>
-            Semibold
-          </ThemedText>
-          <ThemedText type='default' style={{ marginBottom: 4 }}>
-            Default body text
-          </ThemedText>
-          <ThemedText type='link' style={{ marginBottom: 12 }}>
-            Link text
-          </ThemedText>
-          <Divider />
-          <View style={[styles.row, { flexWrap: 'wrap' }]}>
-            {(
-              [
-                'star',
-                'favorite',
-                'home',
-                'settings',
-                'person',
-                'search',
-                'edit',
-                'delete',
-                'share',
-                'lock',
-              ] as const
-            ).map((name) => (
-              <View key={name} style={styles.iconCell}>
-                <MaterialIcons name={name} size={24} color={c.icon} />
-                <Text style={[styles.iconLabel, { color: c.textSecondary }]}>
-                  {name}
-                </Text>
-              </View>
-            ))}
+        <UISection title='Toast System' theme={theme} c={c}>
+          <View style={styles.grid}>
+            <Button
+              label='Success'
+              variant='primary'
+              onPress={() =>
+                showToast('Operation completed successfully!', 'success')
+              }
+            />
+            <Button
+              label='Error'
+              variant='secondary'
+              onPress={() =>
+                showToast('Failed to connect to the server.', 'error')
+              }
+            />
+            <Button
+              label='Warning'
+              onPress={() =>
+                showToast('Your session will expire soon.', 'warning')
+              }
+              style={{ backgroundColor: c.warning }}
+            />
+            <Button
+              label='Info'
+              variant='secondary'
+              onPress={() =>
+                showToast('A new software update is available.', 'info')
+              }
+            />
           </View>
-        </Collapsible>
-      </ParallaxScrollView>
+        </UISection>
+
+        {/* ══════════════════════════════════════════════════════════════════ */}
+        {/* CAROUSEL */}
+        {/* ══════════════════════════════════════════════════════════════════ */}
+        <UISection title='Carousel' theme={theme} c={c}>
+          <Carousel data={CAROUSEL_DATA} height={180} />
+        </UISection>
+      </ScrollView>
 
       {/* ── OVERLAYS (rendered outside scroll) ─────────────────────────── */}
 
       {/* Alert Dialog */}
       <AlertDialog
         visible={alertVisible}
-        title='Xác nhận xoá'
-        message='Bạn có chắc muốn xoá mục này không? Hành động này không thể hoàn tác.'
-        confirmLabel='Xoá'
-        cancelLabel='Huỷ'
+        title='Confirm Delete'
+        message='Are you sure you want to delete this item? This action cannot be undone.'
+        confirmLabel='Delete'
+        cancelLabel='Cancel'
         confirmDestructive
         onConfirm={() => {
           setAlertVisible(false)
-          showToast('Đã xoá thành công!', 'success')
+          showToast('Item deleted!', 'success')
         }}
         onCancel={() => setAlertVisible(false)}
       />
@@ -465,11 +526,11 @@ function ExploreContent() {
         variant='center'
       >
         <View style={{ padding: 20 }}>
-          <ThemedText>Đây là nội dung modal trung tâm.</ThemedText>
+          <ThemedText>This is a centrally aligned modal.</ThemedText>
           <ThemedText
             style={{ marginTop: 8, color: Colors[theme].textSecondary }}
           >
-            Nhấn backdrop hoặc nút ✕ để đóng.
+            Tap backdrop or ✕ to close.
           </ThemedText>
         </View>
       </AppModal>
@@ -482,11 +543,11 @@ function ExploreContent() {
         variant='bottom'
       >
         <View style={{ padding: 20 }}>
-          <ThemedText>Đây là nội dung modal từ phía dưới màn hình.</ThemedText>
+          <ThemedText>This modal slides up from the bottom.</ThemedText>
           <ThemedText
             style={{ marginTop: 8, color: Colors[theme].textSecondary }}
           >
-            Vuốt xuống hoặc nhấn ✕ để đóng.
+            Swipe down or tap ✕ to close.
           </ThemedText>
         </View>
       </AppModal>
@@ -511,15 +572,15 @@ function ExploreContent() {
                 icon: 'dashboard',
                 badge: 3,
               },
-              { key: 'tasks', label: 'Nhiệm vụ', icon: 'task-alt' },
-              { key: 'reports', label: 'Báo cáo', icon: 'bar-chart' },
+              { key: 'tasks', label: 'Tasks', icon: 'task-alt' },
+              { key: 'reports', label: 'Reports', icon: 'bar-chart' },
             ],
           },
           {
             title: 'SETTINGS',
             items: [
-              { key: 'profile', label: 'Hồ sơ', icon: 'person' },
-              { key: 'settings', label: 'Cài đặt', icon: 'settings' },
+              { key: 'profile', label: 'Profile', icon: 'person' },
+              { key: 'settings', label: 'Settings', icon: 'settings' },
             ],
           },
         ]}
@@ -532,11 +593,11 @@ function ExploreContent() {
         snapPoints={['40%']}
       >
         <View style={{ padding: Spacing.md }}>
-          <ThemedText>Nội dung đơn giản không cuộn.</ThemedText>
+          <ThemedText>A simple non-scrollable bottom sheet.</ThemedText>
           <ThemedText
             style={{ marginTop: 8, color: Colors[theme].textSecondary }}
           >
-            Kéo xuống để đóng sheet.
+            Drag down to dismiss.
           </ThemedText>
         </View>
       </SimpleSheet>
@@ -557,7 +618,7 @@ function ExploreContent() {
             >
               <MaterialIcons name='circle' size={8} color={Brand.primary} />
               <ThemedText style={{ marginLeft: 12 }}>
-                Mục nội dung #{i + 1}
+                List Item #{i + 1}
               </ThemedText>
             </View>
           ))}
@@ -566,20 +627,20 @@ function ExploreContent() {
 
       <ActionSheet
         ref={actionSheetRef}
-        title='Chọn hành động'
+        title='Actions'
         actions={[
           {
-            label: 'Chỉnh sửa',
+            label: 'Edit',
             icon: 'edit',
             onPress: () => showToast('Edit pressed', 'info'),
           },
           {
-            label: 'Chia sẻ',
+            label: 'Share',
             icon: 'share',
             onPress: () => showToast('Share pressed', 'info'),
           },
           {
-            label: 'Xoá',
+            label: 'Delete',
             icon: 'delete',
             destructive: true,
             onPress: () => showToast('Delete pressed', 'error'),
@@ -591,13 +652,13 @@ function ExploreContent() {
         ref={formSheetRef}
         title='Form Sheet'
         snapPoints={['60%']}
-        submitLabel='Lưu thay đổi'
-        onSubmit={() => showToast('Form đã được lưu!', 'success')}
+        submitLabel='Save changes'
+        onSubmit={() => showToast('Form saved successfully!', 'success')}
       >
         <View style={{ padding: Spacing.md }}>
           <Input
-            label='Tên'
-            placeholder='Nhập tên của bạn...'
+            label='Name'
+            placeholder='Enter your name...'
             leftIcon='person'
           />
           <Input label='Email' placeholder='you@email.com' leftIcon='email' />
@@ -607,23 +668,18 @@ function ExploreContent() {
       {/* Speed Dial FAB */}
       <SpeedDial
         icon='add'
-        position='top-right'
+        position='bottom-right'
         color={Brand.primary}
         actions={[
           {
-            icon: 'description',
-            label: 'Báo cáo',
-            onPress: () => showToast('Mở báo cáo', 'info'),
+            icon: 'color-lens',
+            label: 'Toggle Theme',
+            onPress: () => showToast('Thiết lập theme trong Sidebar', 'info'),
           },
           {
-            icon: 'edit-document',
-            label: 'Tạo nhiệm vụ',
-            onPress: () => showToast('Tạo nhiệm vụ mới', 'success'),
-          },
-          {
-            icon: 'chat-bubble',
-            label: 'Nhắn tin',
-            onPress: () => showToast('Mở chat', 'info'),
+            icon: 'share',
+            label: 'Share Kit',
+            onPress: () => showToast('Sharing UI Kit...', 'success'),
           },
         ]}
       />
@@ -642,53 +698,53 @@ export default function TabTwoScreen() {
 
 // ─── Styles ───────────────────────────────────────────────────────────────────
 const styles = StyleSheet.create({
-  headerImage: {
-    color: '#808080',
-    bottom: -90,
-    left: -35,
-    position: 'absolute',
-  },
-  titleContainer: {
+  header: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
-    marginBottom: 8,
+    justifyContent: 'space-between',
+    marginBottom: Spacing.sm,
   },
-  sectionLabel: {
+  section: {
+    borderRadius: 16,
+    borderWidth: 1,
+    padding: Spacing.md,
+    marginBottom: Spacing.xl,
+    // Add subtle shadow for library feel
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 10,
+    elevation: 2,
+  },
+  sectionTitle: {
+    fontFamily: Fonts.Playfair.bold,
+    fontSize: 20,
+    marginBottom: Spacing.md,
+  },
+  sectionContent: {
+    gap: Spacing.md,
+  },
+  subLabel: {
     fontSize: Typography.size.sm,
     fontWeight: '600',
-    marginBottom: 8,
     opacity: 0.6,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
   },
   row: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 10,
-    marginVertical: 10,
-    alignItems: 'center',
+    gap: 12,
   },
-  triggerBtn: {
+  rowAuto: {
     flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    borderRadius: 10,
-    borderWidth: 1,
+    flexWrap: 'wrap',
+    gap: 8,
   },
-  triggerLabel: {
-    fontSize: Typography.size.sm,
-    fontWeight: '600',
-  },
-  iconCell: {
-    alignItems: 'center',
-    width: 60,
-    marginBottom: 12,
-  },
-  iconLabel: {
-    fontSize: 9,
-    marginTop: 4,
-    textAlign: 'center',
+  grid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+    justifyContent: 'space-between',
   },
   sheetItem: {
     flexDirection: 'row',
