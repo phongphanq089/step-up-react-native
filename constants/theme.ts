@@ -1,72 +1,200 @@
-/**
- * Below are the colors that are used in the app. The colors are defined in the light and dark mode.
- * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://reactnativeunistyles.vercel.app), etc.
- */
-
 import { Platform } from 'react-native'
 
-// 1. Định nghĩa Palette màu chủ đạo (Brand Palette)
-const Brand = {
-  primary: '#166fddff',
-  secondary: '#ffd33d',
-  black: '#25292e',
-  white: '#ffffff',
-  gray: {
-    50: '#f9fafb',
-    100: '#f3f4f6',
-    500: '#6b7280',
-    800: '#1f2937',
-    900: '#111827',
-  },
+// ─── Brand Colors ─────────────────────────────────────────────────────────────
+export const Brand = {
+  primary: '#166FDD',
+  primaryLight: '#4A9AFF',
+  primaryDark: '#0D4FA3',
+  secondary: '#FFD33D',
+  secondaryLight: '#FFE47A',
+  secondaryDark: '#C9A200',
+  black: '#25292E',
+  white: '#FFFFFF',
 }
 
+// ─── Neutral Palette ──────────────────────────────────────────────────────────
+export const Neutral = {
+  50: '#F9FAFB',
+  100: '#F3F4F6',
+  200: '#E5E7EB',
+  300: '#D1D5DB',
+  400: '#9CA3AF',
+  500: '#6B7280',
+  600: '#4B5563',
+  700: '#374151',
+  800: '#1F2937',
+  900: '#111827',
+}
+
+// ─── Semantic Colors ──────────────────────────────────────────────────────────
+export const Semantic = {
+  success: '#22C55E',
+  successLight: '#DCFCE7',
+  successDark: '#15803D',
+  warning: '#F59E0B',
+  warningLight: '#FEF3C7',
+  warningDark: '#B45309',
+  error: '#EF4444',
+  errorLight: '#FEE2E2',
+  errorDark: '#B91C1C',
+  info: '#3B82F6',
+  infoLight: '#DBEAFE',
+  infoDark: '#1D4ED8',
+}
+
+// ─── Colors by Theme ──────────────────────────────────────────────────────────
 export const Colors = {
   light: {
-    text: Brand.gray[900],
+    // General
+    text: Neutral[900],
+    textSecondary: Neutral[500],
+    textDisabled: Neutral[300],
+    // Backgrounds
     background: Brand.white,
+    backgroundSecondary: Neutral[50],
+    backgroundTertiary: Neutral[100],
+    surface: Brand.white,
+    surfaceRaised: Brand.white,
+    // Borders
+    border: Neutral[200],
+    borderStrong: Neutral[300],
+    // Brand
     tint: Brand.primary,
+    // Navigation
     headerBackground: Brand.white,
-    headerText: Brand.black,
+    headerText: Neutral[900],
     tabBackground: Brand.white,
-    icon: Brand.gray[500],
-    tabIconDefault: Brand.gray[500],
+    icon: Neutral[500],
+    tabIconDefault: Neutral[500],
     tabIconSelected: Brand.primary,
+    // Overlays
+    backdrop: 'rgba(0,0,0,0.5)',
+    // Semantic
+    success: Semantic.success,
+    successBg: Semantic.successLight,
+    warning: Semantic.warning,
+    warningBg: Semantic.warningLight,
+    error: Semantic.error,
+    errorBg: Semantic.errorLight,
+    info: Semantic.info,
+    infoBg: Semantic.infoLight,
   },
   dark: {
-    text: Brand.gray[100],
-    background: Brand.gray[900],
-    tint: Brand.white,
+    text: Neutral[50],
+    textSecondary: Neutral[400],
+    textDisabled: Neutral[600],
+    background: Neutral[900],
+    backgroundSecondary: Neutral[800],
+    backgroundTertiary: Neutral[700],
+    surface: Neutral[800],
+    surfaceRaised: Neutral[700],
+    border: Neutral[700],
+    borderStrong: Neutral[600],
+    tint: Brand.primaryLight,
     headerBackground: Brand.black,
     headerText: Brand.white,
     tabBackground: Brand.black,
-    icon: Brand.gray[500],
-    tabIconDefault: Brand.gray[500],
-    tabIconSelected: Brand.secondary,
+    icon: Neutral[400],
+    tabIconDefault: Neutral[400],
+    tabIconSelected: Brand.primaryLight,
+    backdrop: 'rgba(0,0,0,0.7)',
+    success: Semantic.success,
+    successBg: 'rgba(34,197,94,0.15)',
+    warning: Semantic.warning,
+    warningBg: 'rgba(245,158,11,0.15)',
+    error: Semantic.error,
+    errorBg: 'rgba(239,68,68,0.15)',
+    info: Semantic.info,
+    infoBg: 'rgba(59,130,246,0.15)',
   },
 }
 
+// ─── Spacing ──────────────────────────────────────────────────────────────────
+export const Spacing = {
+  xs: 4,
+  sm: 8,
+  md: 16,
+  lg: 24,
+  xl: 32,
+  '2xl': 48,
+  '3xl': 64,
+}
+
+// ─── Border Radius ────────────────────────────────────────────────────────────
+export const Radius = {
+  xs: 4,
+  sm: 8,
+  md: 12,
+  lg: 16,
+  xl: 24,
+  full: 9999,
+}
+
+// ─── Shadows ──────────────────────────────────────────────────────────────────
+export const Shadows = {
+  sm: {
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 1,
+  },
+  md: {
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  lg: {
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.15,
+    shadowRadius: 16,
+    elevation: 8,
+  },
+}
+
+// ─── Typography ───────────────────────────────────────────────────────────────
+export const Typography = {
+  size: {
+    xs: 11,
+    sm: 13,
+    md: 15,
+    lg: 17,
+    xl: 20,
+    '2xl': 24,
+    '3xl': 30,
+    '4xl': 36,
+  },
+  weight: {
+    regular: '400' as const,
+    medium: '500' as const,
+    semiBold: '600' as const,
+    bold: '700' as const,
+  },
+  lineHeight: {
+    tight: 1.25,
+    normal: 1.5,
+    relaxed: 1.75,
+  },
+}
+
+// ─── Fonts ────────────────────────────────────────────────────────────────────
 export const Fonts = {
   Playfair: {
-    regular: 'PlayfairDisplay-Regular',
-    bold: 'PlayfairDisplay-Bold',
-    semiBold: 'PlayfairDisplay-SemiBold',
-    black: 'PlayfairDisplay-Black',
-    extraBold: 'PlayfairDisplay-ExtraBold',
-    italic: 'PlayfairDisplay-Italic',
-    medium: 'PlayfairDisplay-Medium',
+    regular: 'Roboto-Regular',
+    bold: 'Roboto-Bold',
+    semiBold: 'Roboto-SemiBold',
+    black: 'Roboto-Black',
+    extraBold: 'Roboto-ExtraBold',
+    italic: 'Roboto-Italic',
+    medium: 'Roboto-Medium',
   },
-  // Các phím cũ để tương thích với code hiện tại (ví dụ: explore.tsx)
-  rounded: 'PlayfairDisplay-Regular',
-  mono: 'PlayfairDisplay-Regular',
-  // Hệ thống fallback
+  rounded: 'Roboto-Regular',
+  mono: 'Roboto-Regular',
   system: Platform.select({
-    ios: {
-      sans: 'system-ui',
-      serif: 'ui-serif',
-    },
-    default: {
-      sans: 'normal',
-      serif: 'serif',
-    },
+    ios: { sans: 'system-ui', serif: 'ui-serif' },
+    default: { sans: 'normal', serif: 'serif' },
   }),
 }

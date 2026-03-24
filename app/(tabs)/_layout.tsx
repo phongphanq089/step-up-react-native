@@ -50,9 +50,9 @@ export default function TabLayout() {
       <Tabs.Screen
         name='explore'
         options={{
-          title: 'Explore',
+          title: 'UI Themes',
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name='paperplane.fill' color={color} />
+            <IconSymbol size={28} name='paintpalette.fill' color={color} />
           ),
         }}
       />
@@ -64,6 +64,19 @@ export default function TabLayout() {
             <IconSymbol
               size={28}
               name='person.crop.circle.fill'
+              color={color}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name='form-demo'
+        options={{
+          title: 'Form Demo',
+          tabBarIcon: ({ color }) => (
+            <IconSymbol
+              size={28}
+              name='doc.text.fill'
               color={color}
             />
           ),

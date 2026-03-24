@@ -10,9 +10,11 @@ import { StatusBar } from 'expo-status-bar'
 import { useEffect } from 'react'
 import 'react-native-reanimated'
 
+import { ToastProvider } from '@/components/ui/toast'
+import { SidebarProvider } from '@/context/sidebar-context'
 import { ThemeProvider, useTheme } from '@/context/theme-context'
-import { MaterialIcons } from '@expo/vector-icons'
-import { Pressable } from 'react-native'
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
 
 SplashScreen.preventAutoHideAsync()
 
@@ -21,16 +23,16 @@ export const unstable_settings = {
 }
 
 function AppContent() {
-  const { theme, toggleTheme } = useTheme()
+  const { theme } = useTheme()
 
   const [loaded, error] = useFonts({
-    'PlayfairDisplay-Black': require('../assets/fonts/PlayfairDisplay-Black.ttf'),
-    'PlayfairDisplay-Bold': require('../assets/fonts/PlayfairDisplay-Bold.ttf'),
-    'PlayfairDisplay-ExtraBold': require('../assets/fonts/PlayfairDisplay-ExtraBold.ttf'),
-    'PlayfairDisplay-Italic': require('../assets/fonts/PlayfairDisplay-Italic.ttf'),
-    'PlayfairDisplay-Medium': require('../assets/fonts/PlayfairDisplay-Medium.ttf'),
-    'PlayfairDisplay-Regular': require('../assets/fonts/PlayfairDisplay-Regular.ttf'),
-    'PlayfairDisplay-SemiBold': require('../assets/fonts/PlayfairDisplay-SemiBold.ttf'),
+    'Roboto-Black': require('../assets/fonts/Roboto-Black.ttf'),
+    'Roboto-Bold': require('../assets/fonts/Roboto-Bold.ttf'),
+    'Roboto-ExtraBold': require('../assets/fonts/Roboto-ExtraBold.ttf'),
+    'Roboto-Italic': require('../assets/fonts/Roboto-Italic.ttf'),
+    'Roboto-Medium': require('../assets/fonts/Roboto-Medium.ttf'),
+    'Roboto-Regular': require('../assets/fonts/Roboto-Regular.ttf'),
+    'Roboto-SemiBold': require('../assets/fonts/Roboto-SemiBold.ttf'),
   })
 
   useEffect(() => {
@@ -46,12 +48,7 @@ function AppContent() {
   return (
     <NavProvider value={theme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack>
-        <Stack.Screen
-          name='(tabs)'
-          options={{
-            headerShown: false,
-          }}
-        />
+        <Stack.Screen name='(tabs)' options={{ headerShown: false }} />
         <Stack.Screen
           name='modal'
           options={{ presentation: 'modal', title: 'Modal' }}
@@ -64,8 +61,16 @@ function AppContent() {
 
 export default function RootLayout() {
   return (
-    <ThemeProvider>
-      <AppContent />
-    </ThemeProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <ThemeProvider>
+        <SidebarProvider>
+          <BottomSheetModalProvider>
+            <ToastProvider>
+              <AppContent />
+            </ToastProvider>
+          </BottomSheetModalProvider>
+        </SidebarProvider>
+      </ThemeProvider>
+    </GestureHandlerRootView>
   )
 }
