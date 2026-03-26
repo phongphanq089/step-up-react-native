@@ -1,9 +1,17 @@
-import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { Colors, Radius } from '@/constants/theme'
 import { useTheme } from '@/context/theme-context'
-import { Colors, Radius, Semantic } from '@/constants/theme'
+import React from 'react'
+import { StyleSheet } from 'react-native'
+import { ThemedText } from './themed-text'
+import { ThemedView } from './themed-view'
 
-type BadgeVariant = 'default' | 'success' | 'warning' | 'error' | 'info' | 'primary'
+type BadgeVariant =
+  | 'default'
+  | 'success'
+  | 'warning'
+  | 'error'
+  | 'info'
+  | 'primary'
 
 interface BadgeProps {
   label: string
@@ -17,25 +25,33 @@ export function Badge({ label, variant = 'default', size = 'md' }: BadgeProps) {
 
   const variantStyles: Record<BadgeVariant, { bg: string; color: string }> = {
     default: { bg: c.backgroundTertiary, color: c.textSecondary },
-    primary: { bg: c.infoBg, color: c.tint },
-    success: { bg: c.successBg, color: Semantic.successDark },
-    warning: { bg: c.warningBg, color: Semantic.warningDark },
-    error: { bg: c.errorBg, color: Semantic.errorDark },
-    info: { bg: c.infoBg, color: Semantic.infoDark },
+    primary: { bg: c.colorPrimary, color: c.text },
+    success: { bg: c.successBg, color: c.text },
+    warning: { bg: c.warningBg, color: c.text },
+    error: { bg: c.errorBg, color: c.text },
+    info: { bg: c.infoBg, color: c.text },
   }
 
   const { bg, color } = variantStyles[variant]
 
   return (
-    <View style={[
-      styles.base,
-      size === 'sm' ? styles.sm : styles.md,
-      { backgroundColor: bg },
-    ]}>
-      <Text style={[styles.text, size === 'sm' ? styles.textSm : styles.textMd, { color }]}>
+    <ThemedView
+      style={[
+        styles.base,
+        size === 'sm' ? styles.sm : styles.md,
+        { backgroundColor: bg },
+      ]}
+    >
+      <ThemedText
+        style={[
+          styles.text,
+          size === 'sm' ? styles.textSm : styles.textMd,
+          { color },
+        ]}
+      >
         {label}
-      </Text>
-    </View>
+      </ThemedText>
+    </ThemedView>
   )
 }
 

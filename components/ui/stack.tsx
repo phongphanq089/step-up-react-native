@@ -14,6 +14,7 @@ export interface StackProps extends ThemedViewProps {
   radius?: number
   fullWidth?: boolean
   style?: StyleProp<ViewStyle>
+  wrap?: boolean
 }
 
 interface InternalStackProps extends StackProps {
@@ -33,6 +34,7 @@ export const Stack = ({
   radius,
   fullWidth,
   style,
+  wrap,
   ...rest
 }: InternalStackProps) => {
   const baseStyle: ViewStyle = {
@@ -47,6 +49,7 @@ export const Stack = ({
     borderRadius: radius,
     width: fullWidth ? '100%' : undefined,
     backgroundColor: 'transparent',
+    flexWrap: wrap ? 'wrap' : 'nowrap',
   }
 
   return (

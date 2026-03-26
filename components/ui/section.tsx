@@ -11,6 +11,7 @@ interface SectionProps {
   useGradient?: boolean
   gradientColors?: any // Để linh hoạt hơn khi truyền từ theme
   style?: ViewStyle
+  bgTransparent?: boolean
 }
 
 export function Section({
@@ -21,6 +22,7 @@ export function Section({
   useGradient = false,
   gradientColors,
   style,
+  bgTransparent = false,
 }: SectionProps) {
   const sectionBorder = theme === 'dark' ? c.border : c.border
   const titleColor = theme === 'dark' ? c.text : c.text
@@ -45,7 +47,7 @@ export function Section({
           {title}
         </ThemedText>
       ) : (
-        ''
+        null
       )}
       <View style={styles.sectionContent}>{children}</View>
     </>
@@ -68,7 +70,11 @@ export function Section({
     <View
       style={[
         combinedStyle,
-        { backgroundColor: c.backgroundSecondary || c.background },
+        {
+          backgroundColor: !bgTransparent
+            ? c.backgroundSecondary || c.background
+            : 'transparent',
+        },
       ]}
     >
       {Content}

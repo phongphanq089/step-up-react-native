@@ -76,27 +76,15 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name='explore'
+        name='block-ui'
         options={{
-          title: 'UI Themes',
+          title: 'Block UI',
           tabBarIcon: ({ color }) => (
             <IconSymbol size={28} name='paintpalette.fill' color={color} />
           ),
         }}
       />
-      <Tabs.Screen
-        name='about'
-        options={{
-          title: 'About',
-          tabBarIcon: ({ color }) => (
-            <IconSymbol
-              size={28}
-              name='person.crop.circle.fill'
-              color={color}
-            />
-          ),
-        }}
-      />
+
       <Tabs.Screen
         name='form-demo'
         options={{

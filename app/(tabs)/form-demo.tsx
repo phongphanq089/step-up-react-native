@@ -1,4 +1,5 @@
-import { Button, ScreenContainer } from '@/components/ui'
+import { ScreenContainer } from '@/components/layout/screen-container'
+import { Button } from '@/components/ui'
 import { Checkbox, RadioGroup, Switch } from '@/components/ui/form-controls'
 import { Input } from '@/components/ui/input'
 import { Select, SelectOption } from '@/components/ui/select'

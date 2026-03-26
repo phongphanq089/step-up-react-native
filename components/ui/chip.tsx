@@ -1,8 +1,8 @@
-import React from 'react'
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
-import { MaterialIcons } from '@expo/vector-icons'
 import { Brand, Colors, Radius, Spacing, Typography } from '@/constants/theme'
 import { useTheme } from '@/context/theme-context'
+import { MaterialIcons } from '@expo/vector-icons'
+import React from 'react'
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
 
 type ChipVariant = 'filled' | 'outline' | 'soft'
 
@@ -30,15 +30,23 @@ export function Chip({
 
   const bgColor =
     variant === 'filled'
-      ? selected ? Brand.primary : c.backgroundTertiary
+      ? selected
+        ? Brand.primary
+        : c.backgroundTertiary
       : variant === 'soft'
-      ? selected ? c.infoBg : c.backgroundTertiary
-      : 'transparent'
+        ? selected
+          ? c.colorPrimary
+          : c.backgroundTertiary
+        : 'transparent'
 
   const textColor =
     variant === 'filled'
-      ? selected ? '#fff' : c.text
-      : selected ? c.tint : c.text
+      ? selected
+        ? c.text
+        : c.text
+      : selected
+        ? '#fff'
+        : c.text
 
   const borderColor = selected ? c.tint : c.border
 
@@ -53,11 +61,20 @@ export function Chip({
       ]}
     >
       {icon && (
-        <MaterialIcons name={icon} size={14} color={textColor} style={styles.chipIcon} />
+        <MaterialIcons
+          name={icon}
+          size={14}
+          color={textColor}
+          style={styles.chipIcon}
+        />
       )}
       <Text style={[styles.chipLabel, { color: textColor }]}>{label}</Text>
       {onRemove && (
-        <Pressable onPress={disabled ? undefined : onRemove} hitSlop={6} style={styles.removeBtn}>
+        <Pressable
+          onPress={disabled ? undefined : onRemove}
+          hitSlop={6}
+          style={styles.removeBtn}
+        >
           <MaterialIcons name='close' size={14} color={textColor} />
         </Pressable>
       )}
@@ -74,7 +91,12 @@ interface ChipGroupProps {
   scrollable?: boolean
 }
 
-export function ChipGroup({ chips, selected, onToggle, scrollable = false }: ChipGroupProps) {
+export function ChipGroup({
+  chips,
+  selected,
+  onToggle,
+  scrollable = false,
+}: ChipGroupProps) {
   const content = (
     <View style={[styles.group, scrollable && { flexWrap: 'nowrap' }]}>
       {chips.map((chip) => (

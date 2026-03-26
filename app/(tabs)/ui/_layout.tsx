@@ -26,23 +26,19 @@ export default function UILayout() {
               marginRight: 20,
             }}
           >
-            {router.canGoBack() && (
-              <Pressable
-                onPress={() => (router.canGoBack() ? router.back() : {})}
-                style={{ marginLeft: 15 }}
-                hitSlop={10}
-              >
-                <MaterialIcons
-                  name='arrow-back'
-                  size={24}
-                  color={c.headerText}
-                />
-              </Pressable>
-            )}
+            <Pressable
+              onPress={() => router.push('/')}
+              style={{ marginLeft: 15 }}
+              hitSlop={10}
+            >
+              <MaterialIcons name='arrow-back' size={24} color={c.headerText} />
+            </Pressable>
           </View>
         ),
       }}
     >
+      <Stack.Screen name='theme-base' options={{ title: 'Theme Base' }} />
+      <Stack.Screen name='card' options={{ title: 'Card Component' }} />
       <Stack.Screen name='button' options={{ title: 'Button Component' }} />
     </Stack>
   )

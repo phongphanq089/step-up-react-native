@@ -29,17 +29,17 @@ export const Neutral = {
 // ─── Semantic Colors ──────────────────────────────────────────────────────────
 export const Semantic = {
   success: '#22C55E',
-  successLight: '#DCFCE7',
-  successDark: '#15803D',
+  successLight: '#22C55E',
+  successDark: '#22C55E',
   warning: '#F59E0B',
-  warningLight: '#FEF3C7',
-  warningDark: '#B45309',
+  warningLight: '#F59E0B',
+  warningDark: '#F59E0B',
   error: '#EF4444',
-  errorLight: '#FEE2E2',
-  errorDark: '#B91C1C',
+  errorLight: '#EF4444',
+  errorDark: '#EF4444',
   info: '#3B82F6',
-  infoLight: '#DBEAFE',
-  infoDark: '#1D4ED8',
+  infoLight: '#3B82F6',
+  infoDark: '#3B82F6',
 }
 
 // ─── Colors by Theme ──────────────────────────────────────────────────────────
@@ -112,13 +112,13 @@ export const Colors = {
     tabIconSelected: Brand.primaryLight,
     backdrop: 'rgba(0,0,0,0.7)',
     success: Semantic.success,
-    successBg: 'rgba(34,197,94,0.15)',
+    successBg: Semantic.successDark,
     warning: Semantic.warning,
-    warningBg: 'rgba(245,158,11,0.15)',
+    warningBg: Semantic.warningDark,
     error: Semantic.error,
-    errorBg: 'rgba(239,68,68,0.15)',
-    info: Semantic.info,
-    infoBg: 'rgba(59,130,246,0.15)',
+    errorBg: Semantic.errorDark,
+    info: Semantic.infoDark,
+    infoBg: Semantic.infoDark,
     // Gradients
     gradients: {
       primary: ['#7c3aed', '#4338ca'],

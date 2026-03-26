@@ -1,11 +1,5 @@
-import {
-  Button,
-  HStack,
-  ScreenContainer,
-  Section,
-  ThemedText,
-  VStack,
-} from '@/components/ui'
+import { ScreenContainer } from '@/components/layout/screen-container'
+import { Button, HStack, Section, ThemedText, VStack } from '@/components/ui'
 import { Colors, Spacing } from '@/constants/theme'
 import { useTheme } from '@/context/theme-context'
 import { StyleSheet } from 'react-native'
