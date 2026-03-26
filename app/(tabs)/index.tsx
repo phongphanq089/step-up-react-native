@@ -1,16 +1,16 @@
-import { Image } from 'expo-image'
-import { Platform, StyleSheet } from 'react-native'
-
-import { HelloWave } from '@/components/hello-wave'
 import ParallaxScrollView from '@/components/parallax-scroll-view'
-import { ThemedText } from '@/components/themed-text'
-import { ThemedView } from '@/components/themed-view'
+import { LinkUi, Section } from '@/components/ui'
+import { VStack } from '@/components/ui/stack'
 import { Colors } from '@/constants/theme'
 import { useTheme } from '@/context/theme-context'
-import { Link } from 'expo-router'
+import AntDesign from '@expo/vector-icons/AntDesign'
+import { Image } from 'expo-image'
+import { StyleSheet } from 'react-native'
 
 export default function HomeScreen() {
   const { theme } = useTheme()
+
+  const c = Colors[theme]
   return (
     <ParallaxScrollView
       headerBackgroundColor={{
@@ -19,88 +19,56 @@ export default function HomeScreen() {
       }}
       headerImage={
         <Image
-          source={require('@/assets/images/partial-react-logo.png')}
+          source={require('@/assets/images/og-image.jpg')}
           style={styles.reactLogo}
+          contentFit='cover'
         />
       }
     >
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type='title'>Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type='subtitle'>Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit{' '}
-          <ThemedText type='defaultSemiBold'>app/(tabs)/index.tsx</ThemedText>{' '}
-          to see changes. Press{' '}
-          <ThemedText type='defaultSemiBold'>
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href='/modal'>
-          <Link.Trigger>
-            <ThemedText type='subtitle'>Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction
-              title='Action'
-              icon='cube'
-              onPress={() => alert('Action pressed')}
-            />
-            <Link.MenuAction
-              title='Share'
-              icon='square.and.arrow.up'
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title='More' icon='ellipsis'>
-              <Link.MenuAction
-                title='Delete'
-                icon='trash'
-                destructive
-                onPress={() => alert('Delete pressed')}
+      <VStack spacing={10}>
+        <Section
+          theme={theme}
+          c={Colors[theme]}
+          useGradient={true}
+          gradientColors={c.gradients.primary}
+        >
+          <LinkUi
+            href='/explore'
+            iconPosition='right'
+            bg='transparent'
+            icon={
+              <AntDesign
+                name='arrow-right'
+                size={18}
+                color={c.colorSecondary}
               />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
-
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type='subtitle'>Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type='defaultSemiBold'>
-            npm run reset-project
-          </ThemedText>{' '}
-          to get a fresh <ThemedText type='defaultSemiBold'>app</ThemedText>{' '}
-          directory. This will move the current{' '}
-          <ThemedText type='defaultSemiBold'>app</ThemedText> to{' '}
-          <ThemedText type='defaultSemiBold'>app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-
-      <Link
-        href='/about'
-        style={[
-          styles.button,
-          {
-            backgroundColor: Colors[theme].background,
-          },
-        ]}
-      >
-        <ThemedText type='defaultSemiBold'>Go to About screen</ThemedText>
-      </Link>
+            }
+          >
+            Theme Colors
+          </LinkUi>
+        </Section>
+        <Section
+          theme={theme}
+          c={Colors[theme]}
+          useGradient={true}
+          gradientColors={c.gradients.primary}
+        >
+          <LinkUi
+            href='/ui/button'
+            iconPosition='right'
+            bg='transparent'
+            icon={
+              <AntDesign
+                name='arrow-right'
+                size={18}
+                color={c.colorSecondary}
+              />
+            }
+          >
+            Button
+          </LinkUi>
+        </Section>
+      </VStack>
     </ParallaxScrollView>
   )
 }
@@ -116,8 +84,8 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   reactLogo: {
-    height: 178,
-    width: 290,
+    height: '100%',
+    width: '100%',
     bottom: 0,
     left: 0,
     position: 'absolute',

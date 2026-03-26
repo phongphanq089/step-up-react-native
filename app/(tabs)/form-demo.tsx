@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button'
+import { Button, ScreenContainer } from '@/components/ui'
 import { Checkbox, RadioGroup, Switch } from '@/components/ui/form-controls'
 import { Input } from '@/components/ui/input'
 import { Select, SelectOption } from '@/components/ui/select'
@@ -7,7 +7,7 @@ import { useTheme } from '@/context/theme-context'
 import { zodResolver } from '@hookform/resolvers/zod'
 import React from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import { ScrollView, StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View } from 'react-native'
 import { z } from 'zod'
 
 const formSchema = z
@@ -105,10 +105,7 @@ export default function FormDemoScreen() {
   }
 
   return (
-    <ScrollView
-      style={[styles.container, { backgroundColor: c.background }]}
-      contentContainerStyle={styles.content}
-    >
+    <ScreenContainer contentContainerStyle={styles.content}>
       <Text style={[styles.title, { color: c.text }]}>Đăng ký Tài khoản</Text>
 
       <Controller
@@ -265,14 +262,11 @@ export default function FormDemoScreen() {
         onPress={handleSubmit(onSubmit)}
         style={styles.submitButton}
       />
-    </ScrollView>
+    </ScreenContainer>
   )
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   content: {
     padding: Spacing.xl,
     paddingBottom: Spacing.xl * 4,

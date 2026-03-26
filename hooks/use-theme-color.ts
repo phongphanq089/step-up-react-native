@@ -6,16 +6,17 @@
 import { Colors } from '@/constants/theme';
 import { useTheme } from '@/context/theme-context';
 
-export function useThemeColor(
+export function useThemeColor<T extends keyof typeof Colors.light & keyof typeof Colors.dark>(
   props: { light?: string; dark?: string },
-  colorName: keyof typeof Colors.light & keyof typeof Colors.dark
-) {
-  const { theme } = useTheme();
+  colorName: T
+): (typeof Colors.light)[T] | string {
+  const { theme } = useTheme() as { theme: 'light' | 'dark' };
   const colorFromProps = props[theme];
 
   if (colorFromProps) {
     return colorFromProps;
   } else {
+    // @ts-ignore - Colors[theme] is light | dark, but they share the same keys
     return Colors[theme][colorName];
   }
 }

@@ -1,12 +1,11 @@
+import { Button as UIButton, ScreenContainer } from '@/components/ui'
 import Button from '@/components/button'
 import CircleButton from '@/components/circle-button'
 import IconButton from '@/components/icon-button'
 import ImageViewer from '@/components/ImageViewer'
-import ParallaxScrollView from '@/components/parallax-scroll-view'
-import { IconSymbol } from '@/components/ui/icon-symbol'
-import * as ImagePicker from 'expo-image-picker'
-import { useTheme } from '@/context/theme-context'
 import { Colors } from '@/constants/theme'
+import { useTheme } from '@/context/theme-context'
+import * as ImagePicker from 'expo-image-picker'
 import { useState } from 'react'
 import { StyleSheet, View } from 'react-native'
 
@@ -46,21 +45,8 @@ export default function AboutScreen() {
   }
 
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{
-        light: Colors.light.headerBackground,
-        dark: Colors.dark.headerBackground,
-      }}
-      headerImage={
-        <IconSymbol
-          size={310}
-          color='#808080'
-          name='chevron.left.forwardslash.chevron.right'
-          style={styles.headerImage}
-        />
-      }
-    >
-      <View style={[styles.container, { backgroundColor: Colors[theme].background }]}>
+    <ScreenContainer scrollable={false}>
+      <View style={styles.container}>
         <View style={styles.imageContainer}>
           <ImageViewer
             placeholderImageSource={
@@ -96,7 +82,7 @@ export default function AboutScreen() {
           </View>
         )}
       </View>
-    </ParallaxScrollView>
+    </ScreenContainer>
   )
 }
 

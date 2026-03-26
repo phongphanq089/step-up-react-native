@@ -14,7 +14,7 @@ import {
   View,
 } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { ThemedText } from '../themed-text'
+import { ThemedText } from './themed-text'
 
 const SIDEBAR_WIDTH = 280
 const { width: SCREEN_WIDTH } = Dimensions.get('window')

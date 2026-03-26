@@ -10,8 +10,8 @@ import { StatusBar } from 'expo-status-bar'
 import { useEffect } from 'react'
 import 'react-native-reanimated'
 
-import { ToastProvider } from '@/components/ui/toast'
 import { Sidebar } from '@/components/ui/sidebar'
+import { ToastProvider } from '@/components/ui/toast'
 import { SidebarProvider } from '@/context/sidebar-context'
 import { ThemeProvider, useTheme } from '@/context/theme-context'
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
@@ -63,7 +63,7 @@ function AppContent() {
 
 export default function RootLayout() {
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
+    <GestureHandlerRootView>
       <ThemeProvider>
         <SidebarProvider>
           <BottomSheetModalProvider>

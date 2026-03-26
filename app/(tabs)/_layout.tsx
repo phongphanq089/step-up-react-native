@@ -1,8 +1,8 @@
 import { HapticTab } from '@/components/haptic-tab'
 import { IconSymbol } from '@/components/ui/icon-symbol'
 import { Colors } from '@/constants/theme'
-import { useTheme } from '@/context/theme-context'
 import { useSidebar } from '@/context/sidebar-context'
+import { useTheme } from '@/context/theme-context'
 import { MaterialIcons } from '@expo/vector-icons'
 import { Tabs, useRouter } from 'expo-router'
 import React from 'react'
@@ -13,16 +13,18 @@ export default function TabLayout() {
   const { open: openSidebar } = useSidebar()
   const router = useRouter()
 
+  const c = Colors[theme]
+
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[theme].tabIconSelected,
+        tabBarActiveTintColor: c.colorPrimary,
         headerShown: true,
         headerStyle: {
-          backgroundColor: Colors[theme].headerBackground,
+          backgroundColor: c.headerBackground,
         },
         headerShadowVisible: false,
-        headerTintColor: Colors[theme].headerText,
+        headerTintColor: c.headerText,
         tabBarButton: HapticTab,
         headerLeft: () => (
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -31,23 +33,21 @@ export default function TabLayout() {
               style={{ marginLeft: 15 }}
               hitSlop={10}
             >
-              <MaterialIcons
-                name='menu'
-                size={24}
-                color={Colors[theme].headerText}
-              />
+              <MaterialIcons name='menu' size={24} color={c.headerText} />
             </Pressable>
-            <Pressable
-              onPress={() => router.back()}
-              style={{ marginLeft: 15 }}
-              hitSlop={10}
-            >
-              <MaterialIcons
-                name='arrow-back'
-                size={24}
-                color={Colors[theme].headerText}
-              />
-            </Pressable>
+            {router.canGoBack() && (
+              <Pressable
+                onPress={() => (router.canGoBack() ? router.back() : {})}
+                style={{ marginLeft: 15 }}
+                hitSlop={10}
+              >
+                <MaterialIcons
+                  name='arrow-back'
+                  size={24}
+                  color={c.headerText}
+                />
+              </Pressable>
+            )}
           </View>
         ),
         headerRight: () => (
@@ -55,12 +55,12 @@ export default function TabLayout() {
             <MaterialIcons
               name={theme === 'dark' ? 'light-mode' : 'dark-mode'}
               size={24}
-              color={Colors[theme].headerText}
+              color={c.headerText}
             />
           </Pressable>
         ),
         tabBarStyle: {
-          backgroundColor: Colors[theme].tabBackground,
+          backgroundColor: c.tabBackground,
           borderTopLeftRadius: 20,
           borderTopRightRadius: 20,
         },
@@ -104,6 +104,14 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => (
             <IconSymbol size={28} name='doc.text.fill' color={color} />
           ),
+        }}
+      />
+      <Tabs.Screen
+        name='ui'
+        options={{
+          href: null,
+          tabBarStyle: { display: 'none' },
+          headerShown: false,
         }}
       />
     </Tabs>

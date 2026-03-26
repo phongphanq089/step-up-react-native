@@ -1,6 +1,7 @@
-import { Brand, Colors, Radius, Spacing, Typography } from '@/constants/theme'
+import { Colors, Radius, Spacing, Typography } from '@/constants/theme'
 import { useTheme } from '@/context/theme-context'
 import { MaterialIcons } from '@expo/vector-icons'
+import { LinearGradient } from 'expo-linear-gradient'
 import React from 'react'
 import {
   ActivityIndicator,
@@ -12,11 +13,11 @@ import {
   ViewStyle,
 } from 'react-native'
 
-type Variant = 'primary' | 'secondary' | 'outline' | 'ghost'
+type Variant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'gradient'
 type Size = 'sm' | 'md' | 'lg'
 
 interface ButtonProps {
-  label: string
+  label?: string
   onPress?: () => void
   variant?: Variant
   size?: Size
@@ -25,6 +26,7 @@ interface ButtonProps {
   leftIcon?: React.ReactNode
   rightIcon?: React.ReactNode
   fullWidth?: boolean
+  gradient?: readonly [string, string, ...string[]]
   style?: StyleProp<ViewStyle>
 }
 
@@ -38,69 +40,84 @@ export function Button({
   leftIcon,
   rightIcon,
   fullWidth = false,
+  gradient,
   style,
 }: ButtonProps) {
-  const { theme } = useTheme()
+  const { theme } = useTheme() as { theme: 'light' | 'dark' }
   const c = Colors[theme]
   const isDisabled = disabled || loading
+  const isGradient = variant === 'gradient'
+  const gradientColors = gradient ?? c.gradients.primary
+  const isIconOnly = !label && (!!leftIcon || !!rightIcon)
 
   const containerStyle = [
     styles.base,
     styles[`size_${size}`],
-    variant === 'primary' && { backgroundColor: Brand.primary },
-    variant === 'secondary' && { backgroundColor: Brand.secondary },
+    variant === 'primary' && { backgroundColor: c.colorPrimary },
+    variant === 'secondary' && { backgroundColor: c.colorSecondary },
     variant === 'outline' && {
       backgroundColor: 'transparent',
       borderWidth: 1.5,
-      borderColor: c.tint,
+      borderColor: c.colorPrimary,
     },
     variant === 'ghost' && { backgroundColor: 'transparent' },
+    isGradient && { backgroundColor: 'transparent' },
     isDisabled && styles.disabled,
     fullWidth && { width: '100%' as const },
+    isIconOnly && styles.iconOnly,
   ]
 
   const textColor =
-    variant === 'primary'
+    variant === 'primary' || isGradient
       ? '#fff'
       : variant === 'secondary'
-        ? Brand.black
-        : c.tint
+        ? c.text
+        : c.colorPrimary
 
-  return (
-    <Pressable
-      onPress={onPress}
-      disabled={isDisabled}
-      style={({ pressed }) => [
-        containerStyle,
-        pressed && !isDisabled && styles.pressed,
-      ]}
-    >
+  const content = (
+    <>
       {loading ? (
         <ActivityIndicator color={textColor} size='small' />
       ) : (
         <View style={styles.inner}>
           {leftIcon && (
-            <View style={styles.iconLeft}>
+            <View
+              style={[styles.iconContainer, !isIconOnly && styles.iconLeft]}
+            >
               {typeof leftIcon === 'string' ? (
-                <MaterialIcons name={leftIcon as any} size={20} color={textColor} />
+                <MaterialIcons
+                  name={leftIcon as any}
+                  size={isIconOnly ? 24 : 20}
+                  color={textColor}
+                />
               ) : (
                 leftIcon
               )}
             </View>
           )}
-          <Text
-            style={[
-              styles.label,
-              styles[`label_${size}`],
-              { color: textColor },
-            ]}
-          >
-            {label}
-          </Text>
+
+          {label && (
+            <Text
+              style={[
+                styles.label,
+                styles[`label_${size}`],
+                { color: textColor },
+              ]}
+            >
+              {label}
+            </Text>
+          )}
+
           {rightIcon && (
-            <View style={styles.iconRight}>
+            <View
+              style={[styles.iconContainer, !isIconOnly && styles.iconRight]}
+            >
               {typeof rightIcon === 'string' ? (
-                <MaterialIcons name={rightIcon as any} size={20} color={textColor} />
+                <MaterialIcons
+                  name={rightIcon as any}
+                  size={isIconOnly ? 24 : 20}
+                  color={textColor}
+                />
               ) : (
                 rightIcon
               )}
@@ -108,6 +125,40 @@ export function Button({
           )}
         </View>
       )}
+    </>
+  )
+
+  return (
+    <Pressable
+      onPress={onPress}
+      disabled={isDisabled}
+      style={({ pressed }) => [
+        { width: fullWidth ? '100%' : 'auto' },
+        style as any,
+      ]}
+    >
+      {({ pressed }) =>
+        isGradient ? (
+          <LinearGradient
+            colors={gradientColors as readonly [string, string, ...string[]]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={[
+              containerStyle,
+              pressed && !isDisabled && styles.pressed,
+              style as any,
+            ]}
+          >
+            {content}
+          </LinearGradient>
+        ) : (
+          <View
+            style={[containerStyle, pressed && !isDisabled && styles.pressed]}
+          >
+            {content}
+          </View>
+        )
+      }
     </Pressable>
   )
 }
@@ -137,8 +188,15 @@ const styles = StyleSheet.create({
   disabled: { opacity: 0.45 },
   pressed: { opacity: 0.8 },
   inner: { flexDirection: 'row', alignItems: 'center' },
+  iconContainer: { justifyContent: 'center', alignItems: 'center' },
   iconLeft: { marginRight: Spacing.xs },
   iconRight: { marginLeft: Spacing.xs },
+  iconOnly: {
+    paddingHorizontal: 0,
+    width: 44, // Default square for md
+    height: 44,
+    borderRadius: Radius.full,
+  },
   label: { fontWeight: '600' },
   label_sm: { fontSize: Typography.size.sm },
   label_md: { fontSize: Typography.size.md },

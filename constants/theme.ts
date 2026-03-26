@@ -3,11 +3,11 @@ import { Platform } from 'react-native'
 // ─── Brand Colors ─────────────────────────────────────────────────────────────
 export const Brand = {
   primary: '#166FDD',
-  primaryLight: '#4A9AFF',
-  primaryDark: '#0D4FA3',
+  primaryLight: '#4338ca',
+  primaryDark: '#7c3aed',
   secondary: '#FFD33D',
-  secondaryLight: '#FFE47A',
-  secondaryDark: '#C9A200',
+  secondaryLight: '#f59e0b',
+  secondaryDark: '#FFD33D',
   black: '#25292E',
   white: '#FFFFFF',
 }
@@ -45,6 +45,9 @@ export const Semantic = {
 // ─── Colors by Theme ──────────────────────────────────────────────────────────
 export const Colors = {
   light: {
+    //color
+    colorPrimary: Brand.primaryLight,
+    colorSecondary: Brand.secondaryLight,
     // General
     text: Neutral[900],
     textSecondary: Neutral[500],
@@ -78,8 +81,18 @@ export const Colors = {
     errorBg: Semantic.errorLight,
     info: Semantic.info,
     infoBg: Semantic.infoLight,
+    // Gradients
+    gradients: {
+      primary: ['#166FDD', '#4338ca'],
+      secondary: ['#FFD33D', '#f59e0b'],
+      surface: [Brand.white, Neutral[50]],
+      fade: ['rgba(255,255,255,0)', Brand.white],
+    } as const,
   },
   dark: {
+    //color
+    colorPrimary: Brand.primaryDark,
+    colorSecondary: Brand.secondaryDark,
     text: Neutral[50],
     textSecondary: Neutral[400],
     textDisabled: Neutral[600],
@@ -106,6 +119,13 @@ export const Colors = {
     errorBg: 'rgba(239,68,68,0.15)',
     info: Semantic.info,
     infoBg: 'rgba(59,130,246,0.15)',
+    // Gradients
+    gradients: {
+      primary: ['#7c3aed', '#4338ca'],
+      secondary: ['#FFD33D', '#f59e0b'],
+      surface: [Neutral[800], Neutral[900]],
+      fade: ['rgba(17,24,39,0)', Neutral[900]],
+    } as const,
   },
 }
 
