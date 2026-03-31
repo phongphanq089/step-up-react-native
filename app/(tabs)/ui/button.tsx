@@ -1,8 +1,15 @@
 import { ScreenContainer } from '@/components/layout/screen-container'
-import { Button, HStack, Section, ThemedText, VStack } from '@/components/ui'
-import { Colors, Spacing } from '@/constants/theme'
+import {
+  Button,
+  HStack,
+  Section,
+  SpeedDial,
+  ThemedText,
+  VStack,
+} from '@/components/ui'
+import { Brand, Colors, Semantic, Spacing } from '@/constants/theme'
 import { useTheme } from '@/context/theme-context'
-import { StyleSheet } from 'react-native'
+import { Platform, StyleSheet } from 'react-native'
 
 export default function ButtonUI() {
   const { theme } = useTheme() as { theme: 'light' | 'dark' }
@@ -111,6 +118,34 @@ export default function ButtonUI() {
           variant='gradient'
           gradient={['#4e54c8', '#8f94fb']}
           fullWidth
+        />
+
+        <SpeedDial
+          position='bottom-center'
+          offset={{ x: 0, y: Platform.OS === 'ios' ? 45 : 15 }}
+          size={58}
+          color={Brand.primary}
+          icon='add'
+          actions={[
+            {
+              icon: 'camera-alt',
+              label: 'Camera',
+              onPress: () => console.log('Camera'),
+              color: Semantic.info,
+            },
+            {
+              icon: 'photo-library',
+              label: 'Gallery',
+              onPress: () => console.log('Gallery'),
+              color: Semantic.success,
+            },
+            {
+              icon: 'edit',
+              label: 'New Task',
+              onPress: () => console.log('New Task'),
+              color: Brand.primary,
+            },
+          ]}
         />
       </Section>
     </ScreenContainer>

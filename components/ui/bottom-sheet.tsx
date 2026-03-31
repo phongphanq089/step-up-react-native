@@ -16,11 +16,9 @@
 
 import {
   BottomSheetBackdrop,
-  BottomSheetFlatList,
   BottomSheetModal,
   BottomSheetModalProvider,
   BottomSheetScrollView,
-  BottomSheetTextInput,
   BottomSheetView,
 } from '@gorhom/bottom-sheet'
 import { Brand, Colors, Radius, Spacing, Typography } from '@/constants/theme'
@@ -28,7 +26,6 @@ import { useTheme } from '@/context/theme-context'
 import { MaterialIcons } from '@expo/vector-icons'
 import React, {
   forwardRef,
-  useCallback,
   useImperativeHandle,
   useMemo,
   useRef,
@@ -190,6 +187,8 @@ export const ScrollableSheet = forwardRef<AppBottomSheetRef, BaseSheetProps>(
 /**
  * Danh sách actions — kiểu iOS Action Sheet.
  * Hỗ trợ icon, destructive, disabled.
+ *
+ * NOTE: Dùng .map() thay vì BottomSheetFlatList để tránh lỗi _scrollRef null.
  */
 interface ActionSheetProps {
   actions: SheetAction[]
@@ -208,50 +207,6 @@ export const ActionSheet = forwardRef<AppBottomSheetRef, ActionSheetProps>(
       close: () => sheetRef.current?.dismiss(),
       snapTo: (i) => sheetRef.current?.snapToIndex(i),
     }))
-
-    const renderItem = useCallback(
-      ({ item }: { item: SheetAction }) => (
-        <TouchableOpacity
-          onPress={() => {
-            item.onPress()
-            sheetRef.current?.dismiss()
-          }}
-          disabled={item.disabled}
-          style={[styles.actionItem, { borderBottomColor: c.border }]}
-          activeOpacity={0.7}
-        >
-          {item.icon && (
-            <MaterialIcons
-              name={item.icon}
-              size={22}
-              color={
-                item.destructive
-                  ? c.error
-                  : item.disabled
-                    ? c.textDisabled
-                    : c.text
-              }
-              style={styles.actionIcon}
-            />
-          )}
-          <Text
-            style={[
-              styles.actionLabel,
-              {
-                color: item.destructive
-                  ? c.error
-                  : item.disabled
-                    ? c.textDisabled
-                    : c.text,
-              },
-            ]}
-          >
-            {item.label}
-          </Text>
-        </TouchableOpacity>
-      ),
-      [c],
-    )
 
     return (
       <BottomSheetModal
@@ -273,12 +228,50 @@ export const ActionSheet = forwardRef<AppBottomSheetRef, ActionSheetProps>(
               {title}
             </Text>
           )}
-          <BottomSheetFlatList
-            data={actions}
-            keyExtractor={(item: any) => item.label}
-            renderItem={renderItem}
-            scrollEnabled={false}
-          />
+
+          {/* Plain map — avoid BottomSheetFlatList _scrollRef null crash */}
+          {actions.map((item) => (
+            <TouchableOpacity
+              key={item.label}
+              onPress={() => {
+                item.onPress()
+                sheetRef.current?.dismiss()
+              }}
+              disabled={item.disabled}
+              style={[styles.actionItem, { borderBottomColor: c.border }]}
+              activeOpacity={0.7}
+            >
+              {item.icon && (
+                <MaterialIcons
+                  name={item.icon}
+                  size={22}
+                  color={
+                    item.destructive
+                      ? c.error
+                      : item.disabled
+                        ? c.textDisabled
+                        : c.text
+                  }
+                  style={styles.actionIcon}
+                />
+              )}
+              <Text
+                style={[
+                  styles.actionLabel,
+                  {
+                    color: item.destructive
+                      ? c.error
+                      : item.disabled
+                        ? c.textDisabled
+                        : c.text,
+                  },
+                ]}
+              >
+                {item.label}
+              </Text>
+            </TouchableOpacity>
+          ))}
+
           {/* Cancel */}
           <TouchableOpacity
             onPress={() => sheetRef.current?.dismiss()}
@@ -300,6 +293,9 @@ export const ActionSheet = forwardRef<AppBottomSheetRef, ActionSheetProps>(
 /**
  * Sheet có TextInput bên trong.
  * keyboardBehavior='interactive' — keyboard và sheet di chuyển cùng nhau.
+ *
+ * NOTE: Dùng TextInput thông thường từ react-native thay vì BottomSheetTextInput
+ * vì BottomSheetTextInput gây lỗi "currentlyFocusedInput is not a function" trên RN mới.
  */
 interface FormSheetProps {
   snapPoints?: (string | number)[]
@@ -368,7 +364,10 @@ export const FormSheet = forwardRef<AppBottomSheetRef, FormSheetProps>(
 )
 
 // ─── Re-export gorhom primitives for custom use ───────────────────────────────
-export { BottomSheetModalProvider, BottomSheetTextInput, GestureHandlerRootView }
+// NOTE: BottomSheetTextInput is intentionally NOT re-exported — it causes
+// "RNTextInput.default.State.currentlyFocusedInput is not a function" on newer RN.
+// Use regular TextInput from react-native inside sheets instead.
+export { BottomSheetModalProvider, GestureHandlerRootView }
 
 // ─── Styles ───────────────────────────────────────────────────────────────────
 const styles = StyleSheet.create({

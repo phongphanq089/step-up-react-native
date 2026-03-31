@@ -27,6 +27,30 @@ const ListUi = [
     name: 'Badge & Chip',
     href: '/ui/badge-chip',
   },
+  {
+    name: 'Progress Bar',
+    href: '/ui/progress-bar',
+  },
+  {
+    name: 'Modal',
+    href: '/ui/modal',
+  },
+  {
+    name: 'Sheet',
+    href: '/ui/sheet',
+  },
+  {
+    name: 'Toast',
+    href: '/ui/toast',
+  },
+  {
+    name: 'Tab',
+    href: '/ui/tab',
+  },
+  {
+    name: 'Select',
+    href: '/ui/select',
+  },
 ] as const
 
 export default function HomeScreen() {

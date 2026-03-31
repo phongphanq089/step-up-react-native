@@ -61,8 +61,9 @@ export default function TabLayout() {
         ),
         tabBarStyle: {
           backgroundColor: c.tabBackground,
-          borderTopLeftRadius: 20,
-          borderTopRightRadius: 20,
+          // height: Platform.OS === 'ios' ? 88 : 68,
+          // borderTopLeftRadius: 20,
+          // borderTopRightRadius: 20,
         },
       }}
     >
@@ -88,7 +89,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name='form-demo'
         options={{
-          title: 'Form Demo',
+          title: 'Forms',
           tabBarIcon: ({ color }) => (
             <IconSymbol size={28} name='doc.text.fill' color={color} />
           ),
