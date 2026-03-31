@@ -51,6 +51,10 @@ const ListUi = [
     name: 'Select',
     href: '/ui/select',
   },
+  {
+    name: 'Carousel',
+    href: '/ui/carousel',
+  },
 ] as const
 
 export default function HomeScreen() {
